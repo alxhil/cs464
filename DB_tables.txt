@@ -1,0 +1,203 @@
+DROP TABLE NPS;
+DROP TABLE PARK;
+DROP TABLE ALERT;
+DROP TABLE FEE;
+DROP TABLE MAP;
+DROP TABLE CALENDER;
+DROP TABLE RESERVATION;
+
+ /*IF NOT EXISTS (SELECT * FROM sys.Tables WHERE name='NPS') */
+    CREATE TABLE NPS (
+        ID_News INT NOT NULL,
+        Park_name VARCHAR(50) NOT NULL,
+        State_name VARCHAR(20) NOT NULL,
+        News VARCHAR(30),
+        Description VARCHAR(255),
+        CONSTRAINT PK_NPS PRIMARY KEY (ID_News)
+    );
+    
+    
+/*IF NOT EXISTS (SELECT * FROM sys.Tables WHERE name='Park')*/
+    CREATE TABLE Park (
+        Park_name VARCHAR(50) NOT NULL,
+        State_name VARCHAR(50) NOT NULL,
+        Number_of_visitors INT,
+        Volunteered_hours INT,
+        Archeological_sites VARCHAR(255),
+        Endangered_species VARCHAR(255),
+        Park_info VARCHAR(255),
+        Visitor_access CHAR(1),
+        Internet_access CHAR(1),
+        Cellular_access CHAR(1),
+        CONSTRAINT PK_Park PRIMARY KEY (Park_name,State_name)
+ 
+    );
+ 
+/*IF NOT EXISTS (SELECT * FROM sys.Tables WHERE name='Map') */
+    CREATE TABLE Map (
+        ID_Map INT NOT NULL,
+        Map_image VARCHAR(255),
+        Map_description VARCHAR(255),
+        Park_tile VARCHAR(255),
+        Park_tile_image VARCHAR(255),
+        CONSTRAINT PK_Map PRIMARY KEY (ID_Map)
+    );
+ 
+/*IF NOT EXISTS (SELECT * FROM sys.Tables WHERE name='Fee') */
+    CREATE TABLE Fee (
+        Transaction_number INT NOT NULL,
+        Free_day INT,
+        Fee_misc INT,
+        Fee_noshow INT,
+        Fee_unpaid INT,
+        Park_pass VARCHAR(255),
+        CONSTRAINT PK_Fee PRIMARY KEY (Transaction_number)
+ 
+    );
+ 
+/* IF NOT EXISTS (SELECT * FROM sys.Tables WHERE name='Alert')*/
+    CREATE TABLE Alert (
+        ID_Alert INT NOT NULL,
+        current_alert VARCHAR(255),
+        previous_alert VARCHAR(255),
+        default_alert VARCHAR(255),
+        CONSTRAINT PK_Alert PRIMARY KEY (ID_Alert)
+ 
+ 
+    );
+ 
+/*IF NOT EXISTS (SELECT * FROM sys.Tables WHERE name='Reservation') */
+    CREATE TABLE Reservation (
+        ID_Reservation INT NOT NULL,
+        Reservation_date DATE,
+        Reservation_name VARCHAR(255),
+        Reservation_time TIMESTAMP, 
+        CONSTRAINT PK_Reservation PRIMARY KEY (ID_Reservation)
+ 
+    );
+ 
+/*IF NOT EXISTS (SELECT * FROM sys.Tables WHERE name='Calendar') */
+    CREATE TABLE Calendar(
+        CPark_name VARCHAR(50) NOT NULL,
+        CState_name VARCHAR(50) NOT NULL,
+        Current_season VARCHAR(20),
+        Current_weather VARCHAR(50),
+        Current_data VARCHAR(50),
+        Operating_hours VARCHAR(200),
+        Event_types VARCHAR(255),
+        CONSTRAINT PK_Calendar PRIMARY KEY (CPark_name,CState_name)
+    );
+
+===========================================================================
+Part 2 with Keys
+
+DROP TABLE NPS;
+DROP TABLE ALERT;
+DROP TABLE FEE;
+DROP TABLE MAPS;
+DROP TABLE CALENDAR;
+DROP TABLE RESERVATION;
+DROP TABLE PARK;
+
+/*DROP TABLE STATE;*/
+/*
+    CREATE TABLE State (
+    State_name VARCHAR(50) NOT NULL,
+    World_heritage_sites VARCHAR(255),
+    Number_of_parks INT,
+    CONSTRAINT PK_State PRIMARY KEY (State_name)
+    );
+    */
+/*IF NOT EXISTS (SELECT * FROM sys.Tables WHERE name='Park')*/
+    CREATE TABLE Park (
+        Park_name VARCHAR(50) NOT NULL,
+        State_name VARCHAR(50) NOT NULL,
+        Number_of_visitors INT,
+        Volunteered_hours INT,
+        Archeological_sites VARCHAR(255),
+        Endangered_species VARCHAR(255),
+        Park_info VARCHAR(255),
+        Visitor_access CHAR(1),
+        Internet_access CHAR(1),
+        Cellular_access CHAR(1),
+        CONSTRAINT PK_Park PRIMARY KEY (Park_name,State_name)
+    );
+ 
+ /*IF NOT EXISTS (SELECT * FROM sys.Tables WHERE name='NPS') */
+    CREATE TABLE NPS (
+        ID_News INT NOT NULL,
+        Park_name VARCHAR(50) NOT NULL,
+        State_name VARCHAR(20) NOT NULL,
+        News VARCHAR(30),
+        Description VARCHAR(255),
+        CONSTRAINT PK_NPS PRIMARY KEY (ID_News),
+        FOREIGN KEY (Park_name, State_name) REFERENCES Park (Park_name, State_name)
+       /* FOREIGN KEY (State_name) REFERENCES State (State_name) */
+    );
+    
+    
+
+/*IF NOT EXISTS (SELECT * FROM sys.Tables WHERE name='Map') */
+    CREATE TABLE Maps (
+        MPark_name VARCHAR(50) NOT NULL,
+        MState_name VARCHAR(50) NOT NULL,
+        ID_Map INT NOT NULL,
+        Map_image VARCHAR(255),
+        Map_description VARCHAR(255),
+        Park_tile VARCHAR(255),
+        Park_tile_image VARCHAR(255),
+        CONSTRAINT PK_Map PRIMARY KEY (ID_Map),
+        FOREIGN KEY (MPark_name, MState_name) REFERENCES Park (Park_name, State_name)
+    );
+ 
+/*IF NOT EXISTS (SELECT * FROM sys.Tables WHERE name='Fee') */
+    CREATE TABLE Fee (
+        FPark_name VARCHAR(50) NOT NULL,
+        FState_name VARCHAR(50) NOT NULL,
+        Transaction_number INT NOT NULL,
+        Free_day INT,
+        Fee_misc INT,
+        Fee_noshow INT,
+        Fee_unpaid INT,
+        Park_pass VARCHAR(255),
+        CONSTRAINT PK_Fee PRIMARY KEY (Transaction_number),
+        FOREIGN KEY (FPark_name, FState_name) REFERENCES Park (Park_name, State_name)
+ 
+    );
+ 
+/* IF NOT EXISTS (SELECT * FROM sys.Tables WHERE name='Alert')*/
+    CREATE TABLE Alert (
+        APark_name VARCHAR(50) NOT NULL,
+        AState_name VARCHAR(50) NOT NULL,
+        ID_Alert INT NOT NULL,
+        current_alert VARCHAR(255),
+        previous_alert VARCHAR(255),
+        default_alert VARCHAR(255),
+        CONSTRAINT PK_Alert PRIMARY KEY (ID_Alert),
+        FOREIGN KEY (APark_name, AState_name) REFERENCES Park (Park_name, State_name)
+ 
+    );
+ 
+/*IF NOT EXISTS (SELECT * FROM sys.Tables WHERE name='Reservation') */
+    CREATE TABLE Reservation (
+        RPark_name VARCHAR(50) NOT NULL,
+        RState_name VARCHAR(50) NOT NULL,
+        ID_Reservation INT NOT NULL,
+        Reservation_date DATE,
+        Reservation_name VARCHAR(255),
+        Reservation_time TIMESTAMP, 
+        CONSTRAINT PK_Reservation PRIMARY KEY (ID_Reservation),
+     FOREIGN KEY (RPark_name, RState_name) REFERENCES Park (Park_name, State_name)
+    );
+ 
+/*IF NOT EXISTS (SELECT * FROM sys.Tables WHERE name='Calendar') */
+    CREATE TABLE Calendar(
+        CPark_name VARCHAR(50) NOT NULL,
+        CState_name VARCHAR(50) NOT NULL,
+        Current_season VARCHAR(20),
+        Current_weather VARCHAR(50),
+        Current_data VARCHAR(50),
+        Operating_hours VARCHAR(200),
+        Event_types VARCHAR(255),
+        FOREIGN KEY (CPark_name, CState_name) REFERENCES Park (Park_name, State_name)
+    );
